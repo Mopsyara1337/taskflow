@@ -38,5 +38,13 @@ export const tasks = [
  status: 'Нужно сделать',
  priority: 'Высокий',
  dueDate: '30 октября',
+ },
+ {
+ id: 6,
+ title: 'Еще одна новая задача',
+ project: 'Учебный проект',
+ status: 'Готово',
+ priority: 'Низкий',
+ dueDate: '18 октября',
  }
 ];
