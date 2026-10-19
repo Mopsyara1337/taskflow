@@ -1,0 +1,61 @@
+@baseUrl = http://localhost:3000
+@taskId = 11111111-1111-4111-8111-111111111111
+### Проверка сервера
+GET {{baseUrl}}/api/health
+### Получить все задачи
+GET {{baseUrl}}/api/tasks
+### Фильтр по статусу
+GET {{baseUrl}}/api/tasks?status=Готово
+### Получить одну задачу
+GET {{baseUrl}}/api/tasks/{{taskId}}
+### Создать задачу
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+ "title": "Подготовить третью практику",
+ "project": "TaskFlow",
+ "status": "Нужно сделать",
+ "priority": "Высокий",
+ "dueDate": "2026-09-30"
+}
+### Ошибка 400: пустой title
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+ "title": "",
+ "project": "TaskFlow",
+ "status": "В работе",
+ "priority": "Средний"
+}
+### Ошибка 400: неправильный status
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+ "title": "Проверить валидацию",
+ "project": "TaskFlow",
+ "status": "Срочно",
+ "priority": "Средний"
+}
+### Изменить статус задачи
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+
+{
+ "status": "Готово"
+}
+### Изменить название и приоритет
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+{
+ "title": "Подготовить макет интерфейса",
+ "priority": "Средний"
+}
+### Удалить задачу
+DELETE {{baseUrl}}/api/tasks/{{taskId}}
+### Ошибка 404: неизвестная задача
+GET {{baseUrl}}/api/tasks/00000000-0000-4000-8000-000000000000
+### Ошибка 404: неизвестный endpoint
+GET {{baseUrl}}/api/unknown
