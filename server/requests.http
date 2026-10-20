@@ -49,6 +49,7 @@ Content-Type: application/json
 ### Изменить название и приоритет
 PATCH {{baseUrl}}/api/tasks/{{taskId}}
 Content-Type: application/json
+
 {
  "title": "Подготовить макет интерфейса",
  "priority": "Средний"
@@ -59,3 +60,39 @@ DELETE {{baseUrl}}/api/tasks/{{taskId}}
 GET {{baseUrl}}/api/tasks/00000000-0000-4000-8000-000000000000
 ### Ошибка 404: неизвестный endpoint
 GET {{baseUrl}}/api/unknown
+
+### Создание задачи с описанием
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+    "title": "Изучить Express",
+    "project": "Обучение",
+    "status": "В работе",
+    "priority": "Высокий",
+    "dueDate": "2026-10-20",
+    "description": "Разобраться с обработкой HTTP-запросов"
+}
+
+### Изменение описания задачи
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+
+{
+    "description": "Подготовить обновлённый макет интерфейса TaskFlow"
+}
+
+### Фильтрация задач по проекту
+GET {{baseUrl}}/api/tasks?project=Обучение
+
+### Ошибка 400: неправильный формат даты
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+    "title": "Проверить дату",
+    "project": "Тестирование",
+    "status": "Нужно сделать",
+    "priority": "Средний",
+    "dueDate": "20.10.2026"
+}

@@ -13,6 +13,7 @@ let tasks = [
         status: 'В работе',
         priority: 'Высокий',
         dueDate: '2026-09-20',
+        description: 'Создать макет интерфейса приложения TaskFlow',
     },
     {
         id: '22222222-2222-4222-8222-222222222222',
@@ -21,6 +22,7 @@ let tasks = [
         status: 'Нужно сделать',
         priority: 'Средний',
         dueDate: '2026-09-25',
+        description: 'Изучить основные методы REST API',
     },
     {
         id: '33333333-3333-4333-8333-333333333333',
@@ -29,6 +31,7 @@ let tasks = [
         status: 'Готово',
         priority: 'Низкий',
         dueDate: '2026-09-18',
+        descrition: 'Выполнить добавленные запросы к серверу',
     },
 ];
 
@@ -60,8 +63,16 @@ function validateTask(data, partial = false) {
     if (data.priority !== undefined && !allowedPriorities.includes(data.priority)) {
         errors.push('Недопустимый priority');
     }
-    if (data.dueDate !== undefined && typeof data.dueDate !== 'string') {
-        errors.push('Поле dueDate должно быть строкой');
+    if (data.dueDate !== undefined) {
+        if (typeof data.dueDate !== 'string'){
+            errors.push('Поле dueDate должно быть строкой');
+        }
+        else if(!/^\d{4}-\d{2}-\d{2}$/.test(data.dueDate)){
+            errors.push('Поле dueDate должно быть в формате YYYY-MM-DD');
+        }
+    }
+    if (data.description !== undefined && typeof data.description !== 'string'){
+        errors.push('Поле discription должно быть строкой');
     }
     if (partial && Object.keys(data).length === 0) {
         errors.push('Передайте хотя бы одно поле для изменения');
@@ -74,13 +85,16 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/tasks', (req, res) => {
-    const { status, priority } = req.query;
+    const { status, priority, project } = req.query;
     let result = tasks;
     if (status) {
         result = result.filter((task) => task.status === status);
     }
     if (priority) {
         result = result.filter((task) => task.priority === priority);
+    }
+    if (project){
+        result = result.filter((task) => task.project === project);
     }
     res.json(result);
 });
@@ -109,6 +123,7 @@ app.post('/api/tasks', (req, res) => {
         status: req.body.status ?? 'Нужно сделать',
         priority: req.body.priority ?? 'Средний',
         dueDate: req.body.dueDate ?? '',
+        description: req.body.description ?? '',
     };
     tasks.unshift(newTask);
     res.status(201).json(newTask);
@@ -142,6 +157,7 @@ app.patch('/api/tasks/:id', (req, res) => {
         status: req.body.status ?? currentTask.status,
         priority: req.body.priority ?? currentTask.priority,
         dueDate: req.body.dueDate ?? currentTask.dueDate,
+        description: req.body.description ?? currentTask.description,
     };
 
     app.delete('/api/tasks/:id', (req, res) => {
