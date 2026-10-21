@@ -18,6 +18,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('Все');
+  const [priorityFilter, setPriorityFilter] = useState('Все');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   useEffect(() => {
@@ -54,7 +55,9 @@ export default function App() {
       task.project.toLowerCase().includes(normalizedSearch);
     const matchesStatus =
       statusFilter === 'Все' || task.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesPriority =
+      priorityFilter === 'Все' || task.priority === priorityFilter;
+    return matchesSearch && matchesStatus && matchesPriority;
   });
   function openCreateForm() {
     setEditingTask(null);
@@ -141,6 +144,9 @@ export default function App() {
             element={
               <TasksPage
                 filteredTasks={filteredTasks}
+                onRefresh={reloadTasks}
+                priorityFilter={priorityFilter}
+                onPriorityFilterChange={setPriorityFilter}
                 loading={loading}
                 error={error}
                 search={search}
@@ -153,6 +159,7 @@ export default function App() {
                 onResetFilters={() => {
                   setSearch('');
                   setStatusFilter('Все');
+                  setPriorityFilter('Все');
                 }}
                 onCreateTask={openCreateForm}
                 onEditTask={openEditForm}
