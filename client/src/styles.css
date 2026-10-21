@@ -364,190 +364,315 @@ h1 {
 }
 
 .toolbar {
- display: grid;
- grid-template-columns: minmax(0, 1fr) 220px auto;
- gap: 12px;
- align-items: end;
- margin-bottom: 16px;
- padding: 16px;
- border: 1px solid #e4e7ec;
- border-radius: 14px;
- background: #f8fafc;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px auto;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #e4e7ec;
+    border-radius: 14px;
+    background: #f8fafc;
 }
 
 .searchField,
 .filterField,
 .field {
- display: grid;
- gap: 7px;
+    display: grid;
+    gap: 7px;
 }
 
 .searchField span,
 .filterField span,
 .field span {
- color: #475467;
- font-size: 12px;
- font-weight: 800;
+    color: #475467;
+    font-size: 12px;
+    font-weight: 800;
 }
 
 .searchField input,
 .filterField select,
 .field input,
 .field select {
- width: 100%;
- min-height: 44px;
- border: 1px solid #d0d5dd;
- border-radius: 10px;
- padding: 10px 12px;
- background: white;
- color: #172033;
- outline: none;
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: white;
+    color: #172033;
+    outline: none;
 }
 
 .searchField input:focus,
 .filterField select:focus,
 .field input:focus,
 .field select:focus {
- border-color: #4f46e5;
- box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
 .toolbarButton {
- min-height: 44px;
+    min-height: 44px;
 }
 
 .resultLine {
- margin: 4px 0 12px;
- color: #667085;
- font-size: 13px;
+    margin: 4px 0 12px;
+    color: #667085;
+    font-size: 13px;
 }
 
 .taskActions {
- display: flex;
- flex-wrap: wrap;
- gap: 8px;
- margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .taskActions button {
- border: 1px solid #d9deea;
- border-radius: 9px;
- padding: 7px 10px;
- background: white;
- color: #344054;
- cursor: pointer;
- font-size: 12px;
- font-weight: 700;
+    border: 1px solid #d9deea;
+    border-radius: 9px;
+    padding: 7px 10px;
+    background: white;
+    color: #344054;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .taskActions button:hover {
- background: #f2f4f7;
+    background: #f2f4f7;
 }
 
 .taskActions .dangerAction {
- border-color: #fecdca;
- color: #b42318;
+    border-color: #fecdca;
+    color: #b42318;
 }
 
 .taskActions .dangerAction:hover {
- background: #fef3f2;
+    background: #fef3f2;
 }
 
 .emptyState {
- display: grid;
- gap: 6px;
- place-items: center;
- padding: 42px 20px;
- border: 1px dashed #d0d5dd;
- border-radius: 14px;
- color: #667085;
- text-align: center;
+    display: grid;
+    gap: 6px;
+    place-items: center;
+    padding: 42px 20px;
+    border: 1px dashed #d0d5dd;
+    border-radius: 14px;
+    color: #667085;
+    text-align: center;
 }
 
 .emptyState strong {
- color: #344054;
+    color: #344054;
 }
 
 .modalOverlay {
- position: fixed;
- inset: 0;
- z-index: 20;
- display: grid;
- place-items: center;
- padding: 20px;
- background: rgba(15, 23, 42, 0.58);
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.58);
 }
 
 .taskFormCard {
- width: min(680px, 100%);
- max-height: calc(100vh - 40px);
- overflow-y: auto;
- border: 1px solid #e4e7ec;
- border-radius: 20px;
- padding: 24px;
- background: white;
- box-shadow: 0 28px 70px rgba(15, 23, 42, 0.26);
+    width: min(680px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border: 1px solid #e4e7ec;
+    border-radius: 20px;
+    padding: 24px;
+    background: white;
+    box-shadow: 0 28px 70px rgba(15, 23, 42, 0.26);
 }
 
 .formHeading {
- display: flex;
- align-items: flex-start;
- justify-content: space-between;
- gap: 16px;
- margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .formHeading h2 {
- margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .iconButton {
- width: 40px;
- height: 40px;
- border: 1px solid #e4e7ec;
- border-radius: 10px;
- background: white;
- color: #475467;
- cursor: pointer;
- font-weight: 800;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e4e7ec;
+    border-radius: 10px;
+    background: white;
+    color: #475467;
+    cursor: pointer;
+    font-weight: 800;
 }
 
 .formGrid {
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 .fieldWide {
- grid-column: 1 / -1;
+    grid-column: 1 / -1;
 }
 
 .formActions {
- display: flex;
- justify-content: flex-end;
- gap: 10px;
- margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
 }
 
 @media (max-width: 760px) {
- .toolbar {
- grid-template-columns: 1fr;
- }
+    .toolbar {
+        grid-template-columns: 1fr;
+    }
 
- .formGrid {
- grid-template-columns: 1fr;
- }
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
 
- .fieldWide {
- grid-column: auto;
- }
+    .fieldWide {
+        grid-column: auto;
+    }
 
- .formActions {
- flex-direction: column-reverse;
- }
- 
- .formActions .primaryButton,
- .formActions .ghostButton {
- width: 100%;
- }
+    .formActions {
+        flex-direction: column-reverse;
+    }
+
+    .formActions .primaryButton,
+    .formActions .ghostButton {
+        width: 100%;
+    }
+}
+
+
+.linkButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.menuItem {
+    display: block;
+    text-decoration: none;
+}
+
+.loadingCard,
+.errorCard,
+.detailCard,
+.notFoundCard {
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+}
+
+.loadingCard,
+.errorCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.loadingCard {
+    justify-content: flex-start;
+}
+
+.loadingCard p,
+.errorCard p {
+    margin: 5px 0 0;
+    color: #64748b;
+}
+
+.spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.errorCard {
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+.taskActionLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    color: #334155;
+    text-decoration: none;
+    background: #ffffff;
+}
+
+.detailCard {
+    display: grid;
+    gap: 26px;
+}
+
+.detailGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+}
+
+.detailGrid div {
+    padding: 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.detailGrid dt {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.detailGrid dd {
+    margin: 6px 0 0;
+    overflow-wrap: anywhere;
+    font-weight: 700;
+}
+
+.notFoundCard {
+    text-align: center;
+}
+
+@media (max-width: 720px) {
+    .detailGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .loadingCard,
+    .errorCard {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation: none;
+    }
 }

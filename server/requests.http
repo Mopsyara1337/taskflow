@@ -60,3 +60,32 @@ GET {{baseUrl}}/api/tasks/00000000-0000-4000-8000-000000000000
 
 ### Ошибка 404: неизвестный endpoint
 GET {{baseUrl}}/api/unknown
+
+### Создание задачи с описанием
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+    "title": "Изучить PostgreSQL",
+    "project": "Обучение",
+    "status": "В работе",
+    "priority": "Высокий",
+    "description": "Разобраться с SQL-запросами и PostgreSQL"
+}
+
+### Изменение описания задачи
+PATCH {{baseUrl}}/api/tasks/{{taskId}}
+Content-Type: application/json
+
+{
+    "description": "Подготовить окончательный макет интерфейса"
+}
+
+### Фильтрация задач по проекту
+GET {{baseUrl}}/api/tasks?project=Обучение
+
+### Фильтрация по проекту и статусу
+GET {{baseUrl}}/api/tasks?project=Обучение&status=В работе
+
+### Получить статистику задач
+GET {{baseUrl}}/api/stats
