@@ -46,6 +46,9 @@ function validateTask(data, partial = false) {
     ) {
         errors.push('Поле dueDate должно быть строкой');
     }
+    if (data.description !== undefined && typeof data.description !== 'string') {
+        errors.push('Поле description должно быть строкой');
+    }
     if (partial && Object.keys(data).length === 0) {
         errors.push('Передайте хотя бы одно поле для изменения');
     }
@@ -78,24 +81,50 @@ app.get('/api/health', async (req, res, next) => {
 
 app.get('/api/tasks', async (req, res, next) => {
     try {
-        const { status, priority } = req.query;
+        const { status, priority, project } = req.query;
+
         const result = await pool.query(
             `SELECT
                 id,
                 title,
                 project,
+                description,
                 status,
                 priority,
                 due_date::text AS "dueDate",
                 created_at AS "createdAt",
                 updated_at AS "updatedAt"
-                FROM tasks
-                WHERE ($1::text IS NULL OR status = $1)
+            FROM tasks
+            WHERE ($1::text IS NULL OR status = $1)
                 AND ($2::text IS NULL OR priority = $2)
-                ORDER BY created_at DESC`,
-            [status ?? null, priority ?? null]
+                AND ($3::text IS NULL OR project = $3)
+            ORDER BY created_at DESC`,
+            [status ?? null, priority ?? null, project ?? null]
         );
+
         res.json(result.rows);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.get('/api/stats', async (req, res, next) => {
+    try {
+        const result = await pool.query(
+            `SELECT
+                COUNT(*) AS total,
+                COUNT(*) FILTER (WHERE status = 'В работе') AS "inProgress",
+                COUNT(*) FILTER (WHERE status = 'Готово') AS completed
+            FROM tasks`
+        );
+
+        const stats = result.rows[0];
+
+        res.json({
+            total: Number(stats.total),
+            inProgress: Number(stats.inProgress),
+            completed: Number(stats.completed),
+        });
     } catch (error) {
         next(error);
     }
@@ -108,25 +137,29 @@ app.get('/api/tasks/:id', async (req, res, next) => {
                 message: 'Некорректный id задачи',
             });
         }
+
         const result = await pool.query(
             `SELECT
                 id,
                 title,
                 project,
+                description,
                 status,
                 priority,
                 due_date::text AS "dueDate",
                 created_at AS "createdAt",
                 updated_at AS "updatedAt"
-                FROM tasks
-                WHERE id = $1`,
+            FROM tasks
+            WHERE id = $1`,
             [req.params.id]
         );
+
         if (result.rowCount === 0) {
             return res.status(404).json({
                 message: 'Задача не найдена',
             });
         }
+
         res.json(result.rows[0]);
     } catch (error) {
         next(error);
@@ -139,6 +172,7 @@ app.post('/api/tasks', async (req, res, next) => {
         if (errors.length > 0) {
             return res.status(400).json({ errors });
         }
+
         const id = randomUUID();
         const status = req.body.status ?? 'Нужно сделать';
         const priority = req.body.priority ?? 'Средний';
@@ -151,13 +185,15 @@ app.post('/api/tasks', async (req, res, next) => {
                 project,
                 status,
                 priority,
-                due_date
-                )
-                VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING
+                due_date,
+                description
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING
                 id,
                 title,
                 project,
+                description,
                 status,
                 priority,
                 due_date::text AS "dueDate",
@@ -170,8 +206,10 @@ app.post('/api/tasks', async (req, res, next) => {
                 status,
                 priority,
                 dueDate,
+                req.body.description ?? null,
             ]
         );
+
         res.status(201).json(result.rows[0]);
     } catch (error) {
         next(error);
@@ -185,10 +223,12 @@ app.patch('/api/tasks/:id', async (req, res, next) => {
                 message: 'Некорректный id задачи',
             });
         }
+
         const errors = validateTask(req.body, true);
         if (errors.length > 0) {
             return res.status(400).json({ errors });
         }
+
         const currentResult = await pool.query(
             `SELECT
                 id,
@@ -196,42 +236,54 @@ app.patch('/api/tasks/:id', async (req, res, next) => {
                 project,
                 status,
                 priority,
-                due_date::text AS "dueDate"
-                FROM tasks
-                WHERE id = $1`,
+                due_date::text AS "dueDate",
+                description
+            FROM tasks
+            WHERE id = $1`,
             [req.params.id]
         );
+
         if (currentResult.rowCount === 0) {
             return res.status(404).json({
                 message: 'Задача не найдена',
             });
         }
+
         const current = currentResult.rows[0];
+
         const title = req.body.title !== undefined
             ? req.body.title.trim()
             : current.title;
+
         const project = req.body.project !== undefined
             ? req.body.project.trim()
             : current.project;
+
         const status = req.body.status ?? current.status;
         const priority = req.body.priority ?? current.priority;
+
         const dueDate = req.body.dueDate !== undefined
             ? req.body.dueDate || null
             : current.dueDate;
+
+        const description = req.body.description ?? current.description;
+
         const result = await pool.query(
             `UPDATE tasks
-                SET
+            SET
                 title = $1,
                 project = $2,
                 status = $3,
                 priority = $4,
                 due_date = $5,
+                description = $6,
                 updated_at = NOW()
-                WHERE id = $6
-                RETURNING
+            WHERE id = $7
+            RETURNING
                 id,
                 title,
                 project,
+                description,
                 status,
                 priority,
                 due_date::text AS "dueDate",
@@ -243,9 +295,11 @@ app.patch('/api/tasks/:id', async (req, res, next) => {
                 status,
                 priority,
                 dueDate,
+                description,
                 req.params.id,
             ]
         );
+
         res.json(result.rows[0]);
     } catch (error) {
         next(error);
