@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-export default function Sidebar() {
+export default function Sidebar({ user, onLogout }) {
     function linkClass({ isActive }) {
         return isActive ? 'menuItem active' : 'menuItem';
     }
@@ -19,10 +19,24 @@ export default function Sidebar() {
                 <NavLink className={linkClass} to="/tasks">
                     Мои задачи
                 </NavLink>
+                <NavLink className={linkClass} to="/profile">
+                    Профиль
+                </NavLink>
             </nav>
+            <div className="sidebarUser">
+                <strong>{user.name}</strong>
+                <span>{user.email}</span>
+                <button
+                    className="sidebarLogout"
+                    type="button"
+                    onClick={onLogout}
+                >
+                    Выйти
+                </button>
+            </div>
             <div className="sidebarNote">
-                <strong>Практика 5</strong>
-                <span>React + REST API + Router</span>
+                <strong>Практика 6</strong>
+                <span>Сессии и персональные задачи</span>
             </div>
         </aside>
     );

@@ -89,3 +89,19 @@ GET {{baseUrl}}/api/tasks?project=Обучение&status=В работе
 
 ### Получить статистику задач
 GET {{baseUrl}}/api/stats
+
+### Регистрация
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+ "name": "Алексей",
+ "email": "alexey@example.com",
+ "password": "password123"
+}
+### Текущий пользователь
+GET http://localhost:3000/api/auth/me
+### Задачи текущего пользователя
+GET http://localhost:3000/api/tasks
+### Выход
+POST http://localhost:3000/api/auth/logout

@@ -676,3 +676,94 @@ h1 {
         animation: none;
     }
 }
+
+.authPage {
+ min-height: 100vh;
+ display: grid;
+ place-items: center;
+ padding: 28px;
+ background: #f5f7fb;
+}
+.authCard {
+ width: min(460px, 100%);
+ padding: 30px;
+ border: 1px solid #e5e7eb;
+ border-radius: 22px;
+ background: white;
+}
+.authCard form {
+ display: grid;
+ gap: 16px;
+ margin-top: 24px;
+}
+.authSubmit {
+ width: 100%;
+ margin-top: 6px;
+}
+.authError {
+ margin-top: 18px;
+ padding: 12px 14px;
+ border-radius: 12px;
+ background: #fff1f2;
+ color: #be123c;
+}
+.authSwitch {
+ margin: 20px 0 0;
+ text-align: center;
+}
+.sidebarUser {
+ padding: 14px;
+ border: 1px solid #374151;
+ border-radius: 14px;
+}
+.sidebarUser strong,
+.sidebarUser span {
+ display: block;
+ overflow-wrap: anywhere;
+}
+.sidebarUser span {
+ margin-top: 4px;
+ color: #9ca3af;
+ font-size: 12px;
+}
+.sidebarLogout {
+ width: 100%;
+ margin-top: 12px;
+ border: 1px solid #4b5563;
+ border-radius: 10px;
+ padding: 9px 10px;
+ color: white;
+ background: transparent;
+ cursor: pointer;
+}
+.profileCard {
+ padding: 28px;
+ border: 1px solid #e5e7eb;
+ border-radius: 20px;
+ background: white;
+}
+.profileGrid {
+ display: grid;
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+ gap: 16px;
+ margin: 26px 0 0;
+}
+.profileGrid div {
+ padding: 18px;
+ border: 1px solid #e5e7eb;
+ border-radius: 14px;
+}
+.profileGrid dt {
+ color: #6b7280;
+ font-size: 13px;
+}
+.profileGrid dd {
+ margin: 8px 0 0;
+ font-weight: 700;
+ overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+ .profileGrid {
+ grid-template-columns: 1fr;
+ }
+}
