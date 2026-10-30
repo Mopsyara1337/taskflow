@@ -9,6 +9,7 @@ export default function LoginPage({ onAuthenticated }) {
     });
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     function handleChange(event) {
         const { name, value } = event.target;
         setForm((current) => ({ ...current, [name]: value }));
@@ -49,12 +50,20 @@ export default function LoginPage({ onAuthenticated }) {
                     <label className="field">
                         <span>Пароль</span>
                         <input
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             name="password"
                             value={form.password}
                             onChange={handleChange}
                             required
                         />
+                    </label>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={showPassword}
+                            onChange={(event) => setShowPassword(event.target.checked)}
+                        />
+                        Показать пароль
                     </label>
                     <button
                         className="primaryButton authSubmit"
