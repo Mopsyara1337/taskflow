@@ -1,22 +1,40 @@
 import express from 'express';
 import pool from './db/pool.js';
-import { describe } from 'node:test';
 import cors from 'cors';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'node:crypto';
 import { requireAuth } from './middleware/requireAuth.js';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+    validateLogin,
+    validateRegistration,
+    validateTask,
+} from './validation/validators.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFound } from './middleware/notFound.js';
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDist = path.resolve(
+    __dirname,
+    '../../client/dist'
+);
 
 
 const app = express();
-const PORT = 3000;
 
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-}));
+if (process.env.NODE_ENV !== 'production') {
+    app.use(
+        cors({
+            origin: 'http://localhost:5173',
+            credentials: true,
+        })
+    );
+}
 
 
 app.use(express.json());
@@ -44,56 +62,6 @@ app.use(
         },
     })
 );
-
-const allowedStatuses = [
-    'Нужно сделать',
-    'В работе',
-    'Готово',
-];
-const allowedPriorities = [
-    'Низкий',
-    'Средний',
-    'Высокий',
-];
-function validateTask(data, partial = false) {
-    const errors = [];
-    if (!partial || data.title !== undefined) {
-        if (typeof data.title !== 'string' || !data.title.trim()) {
-            errors.push('Поле title обязательно');
-        }
-    }
-    if (!partial || data.project !== undefined) {
-        if (typeof data.project !== 'string' || !data.project.trim()) {
-            errors.push('Поле project обязательно');
-        }
-    }
-    if (
-        data.status !== undefined &&
-        !allowedStatuses.includes(data.status)
-    ) {
-        errors.push('Недопустимый status');
-    }
-    if (
-        data.priority !== undefined &&
-        !allowedPriorities.includes(data.priority)
-    ) {
-        errors.push('Недопустимый priority');
-    }
-    if (data.description !== undefined && typeof data.description !== 'string') {
-        errors.push('Поле description должно быть строкой');
-    }
-    if (
-        data.dueDate !== undefined &&
-        typeof data.dueDate !== 'string'
-    ) {
-        errors.push('Поле dueDate должно быть строкой');
-    }
-    if (partial && Object.keys(data).length === 0) {
-        errors.push('Передайте хотя бы одно поле для изменения');
-    }
-    return errors;
-}
-
 
 const UUID_PATTERN =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -137,24 +105,17 @@ app.get('/api/health', async (req, res, next) => {
 
 app.post('/api/auth/register', async (req, res, next) => {
     try {
-        const name = req.body.name?.trim();
-        const email = req.body.email?.trim().toLowerCase();
+        const validationError = validateRegistration(req.body);
+
+        if (validationError) {
+            return res.status(400).json({
+                message: validationError,
+            });
+        }
+
+        const name = req.body.name.trim();
+        const email = req.body.email.trim().toLowerCase();
         const password = req.body.password;
-        if (!name || name.length < 2) {
-            return res.status(400).json({
-                message: 'Имя должно содержать минимум 2 символа',
-            });
-        }
-        if (!email || !email.includes('@')) {
-            return res.status(400).json({
-                message: 'Укажите корректный email',
-            });
-        }
-        if (!password || password.length < 8) {
-            return res.status(400).json({
-                message: 'Пароль должен содержать минимум 8 символов',
-            });
-        }
         const passwordHash = await bcrypt.hash(password, 12);
         const userId = randomUUID();
         await pool.query(
@@ -177,13 +138,16 @@ app.post('/api/auth/register', async (req, res, next) => {
 
 app.post('/api/auth/login', async (req, res, next) => {
     try {
-        const email = req.body.email?.trim().toLowerCase();
-        const password = req.body.password;
-        if (!email || !password) {
+        const validationError = validateLogin(req.body);
+
+        if (validationError) {
             return res.status(400).json({
-                message: 'Укажите email и пароль',
+                message: validationError,
             });
         }
+
+        const email = req.body.email.trim().toLowerCase();
+        const password = req.body.password;
         const result = await pool.query(
             `SELECT id, name, email, password_hash
  FROM users
@@ -321,9 +285,12 @@ app.get('/api/tasks/:id', requireAuth, async (req, res, next) => {
 
 app.post('/api/tasks', requireAuth, async (req, res, next) => {
     try {
-        const errors = validateTask(req.body);
-        if (errors.length > 0) {
-            return res.status(400).json({ errors });
+        const validationError = validateTask(req.body);
+
+        if (validationError) {
+            return res.status(400).json({
+                message: validationError,
+            });
         }
         const id = randomUUID();
         const status = req.body.status ?? 'Нужно сделать';
@@ -373,9 +340,12 @@ app.patch('/api/tasks/:id', requireAuth, async (req, res, next) => {
                 message: 'Некорректный id задачи',
             });
         }
-        const errors = validateTask(req.body, true);
-        if (errors.length > 0) {
-            return res.status(400).json({ errors });
+        const validationError = validateTask(req.body, { partial: true });
+
+        if (validationError) {
+            return res.status(400).json({
+                message: validationError,
+            });
         }
         const currentResult = await pool.query(
             `SELECT
@@ -471,34 +441,22 @@ app.delete('/api/tasks/:id', requireAuth, async (req, res, next) => {
     }
 });
 
-app.use((req, res) => {
-    res.status(404).json({
-        message: 'Endpoint не найден',
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(clientDist));
+
+    app.use((req, res, next) => {
+        if (
+            req.method !== 'GET' ||
+            req.path.startsWith('/api/')
+        ) {
+            return next();
+        }
+
+        res.sendFile(path.join(clientDist, 'index.html'));
     });
-});
+}
 
-app.use((error, req, res, next) => {
-    console.error(error);
+app.use(notFound);
+app.use(errorHandler);
 
-    const badDataCodes = [
-        '22P02',
-        '22007',
-        '22008',
-        '23502',
-        '23514',
-    ];
-
-    if (badDataCodes.includes(error.code)) {
-        return res.status(400).json({
-            message: 'База данных отклонила переданные данные',
-        });
-    }
-
-    res.status(500).json({
-        message: 'Внутренняя ошибка сервера',
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(`TaskFlow API: http://localhost:${PORT}`);
-});
+export default app;

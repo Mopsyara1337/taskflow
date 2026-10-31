@@ -105,3 +105,24 @@ GET http://localhost:3000/api/auth/me
 GET http://localhost:3000/api/tasks
 ### Выход
 POST http://localhost:3000/api/auth/logout
+
+### Вход
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "alexey@example.com",
+    "password": "password123"
+}
+
+### Неверный статус
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+ "title": "Проверить финальную версию",
+ "project": "TaskFlow",
+ "status": "Когда-нибудь",
+ "priority": "Высокий",
+ "dueDate": "2026-10-01"
+}
