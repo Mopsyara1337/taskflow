@@ -77,4 +77,10 @@ describe('TaskFlow API', () => {
         expect(response.status).toBe(400);
         expect(response.body.message).toBeTruthy();
     });
+    test('неизвестный API endpoint возвращает 404', async () => {
+        const response = await request(app).get('/api/unknown');
+
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBeTruthy();
+    });
 });
